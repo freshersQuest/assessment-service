@@ -7,9 +7,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
-    @Query("SELECT q FROM Question q WHERE q.id IN :questionIds")
-    List<Question> findByIds(@Param("questionIds") List<Long> questionIds);
+    Optional<Question> findByIdAndIsDeactivated(Long questionId, boolean b);
+
+    List<Question> findByQuizIdAndIsDeactivated(Long quizId, boolean b);
 }

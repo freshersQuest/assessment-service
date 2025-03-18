@@ -1,9 +1,7 @@
 package com.fq.assessment_service.controller;
 
 import com.fq.assessment_service.constants.AssessmentConstants;
-import com.fq.assessment_service.dto.LevelRequestDTO;
-import com.fq.assessment_service.dto.QuestionDTO;
-import com.fq.assessment_service.dto.QuizDTO;
+import com.fq.assessment_service.dto.*;
 import com.fq.assessment_service.service.ILevelService;
 import com.fq.assessment_service.service.IQuestionService;
 import com.fq.assessment_service.service.IQuizService;
@@ -16,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("${api.prefix}/quiz")
+@RequestMapping("${api.prefix}/assessment")
 public class QuizController {
     @Autowired
     private IQuestionService questionService;
@@ -40,9 +38,9 @@ public class QuizController {
                  .body(new ResponseDTO(AssessmentConstants.STATUS_201, AssessmentConstants.Quiz_201));
     }
 
-    @PutMapping("/quiz/{quizId}")
-    public ResponseEntity<ResponseDTO> updateQuiz(@PathVariable Long quizId, @RequestBody QuizDTO quizDomainDTO) {
-        boolean isUpdated = quizService.updateQuiz(quizId, quizDomainDTO);
+        @PutMapping("/quiz/{quizId}")
+        public ResponseEntity<ResponseDTO> updateQuiz(@PathVariable("quizId") Long quizId, @RequestBody QuizDTO quizDomainDTO) {
+            boolean isUpdated = quizService.updateQuiz(quizId, quizDomainDTO);
         if(isUpdated) {
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -55,7 +53,7 @@ public class QuizController {
     }
 
     @DeleteMapping("/quiz/{quizId}")
-    public ResponseEntity<ResponseDTO> deleteQuiz(@PathVariable Long quizId) {
+    public ResponseEntity<ResponseDTO> deleteQuiz(@PathVariable("quizId") Long quizId) {
         boolean isDeleted = quizService.deleteQuiz(quizId);
         if(isDeleted) {
             return ResponseEntity
@@ -69,13 +67,13 @@ public class QuizController {
     }
 
     @GetMapping("/questions")
-    public List<QuestionDTO> getQuestionsByQuizId(@RequestParam Long domainId) {
-        return questionService.getQuestionsByQuizId(domainId);
+    public List<QuestionDTO> getQuestionsByQuizId(@RequestParam("quizId") Long quizId) {
+        return questionService.getQuestionsByQuizId(quizId);
     }
 
     @PostMapping("/questions")
-    public ResponseEntity<ResponseDTO> addQuestion(@RequestBody QuestionDTO questionDTO) {
-        questionService.addQuestion(questionDTO);
+    public ResponseEntity<ResponseDTO> addQuestion(@RequestBody QuestionRequestDTO questionRequestDTO) {
+        questionService.addQuestion(questionRequestDTO);
         return  ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new ResponseDTO(AssessmentConstants.STATUS_201, AssessmentConstants.Quiz_201));
@@ -83,8 +81,8 @@ public class QuizController {
     }
 
     @PutMapping("/questions/{questionId}")
-    public ResponseEntity<ResponseDTO> updateQuestion(@PathVariable Long questionId, @RequestBody QuestionDTO quizDomainDTO) {
-       boolean isUpdated = questionService.updateQuestion(questionId,quizDomainDTO);
+    public ResponseEntity<ResponseDTO> updateQuestion(@PathVariable("questionId") Long questionId, @RequestBody QuestionRequestDTO questionRequestDTO) {
+       boolean isUpdated = questionService.updateQuestion(questionId,questionRequestDTO);
         if(isUpdated) {
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -97,7 +95,7 @@ public class QuizController {
     }
 
     @DeleteMapping("/questions/{questionId}")
-    public ResponseEntity<ResponseDTO> deleteQuestion(@PathVariable Long questionId) {
+    public ResponseEntity<ResponseDTO> deleteQuestion(@PathVariable("questionId") Long questionId) {
         boolean isDeleted = questionService.deleteQuestion(questionId);
         if(isDeleted) {
             return ResponseEntity
@@ -110,6 +108,11 @@ public class QuizController {
         }
     }
 
+    @GetMapping("/levels")
+    public List<LevelDTO> getLevels() {
+        return levelService.getLevels();
+    }
+
     @PostMapping("/levels")
     public ResponseEntity<ResponseDTO> addLevel(@RequestBody LevelRequestDTO levelRequestDTO) {
         levelService.addLevel(levelRequestDTO);
@@ -119,7 +122,7 @@ public class QuizController {
     }
 
     @PutMapping("/levels/{levelId}")
-    public ResponseEntity<ResponseDTO> updateLevel(@PathVariable Long levelId, @RequestBody LevelRequestDTO levelRequestDTO) {
+    public ResponseEntity<ResponseDTO> updateLevel(@PathVariable("levelId") Long levelId, @RequestBody LevelRequestDTO levelRequestDTO) {
         boolean isUpdated = levelService.updateLevel(levelId, levelRequestDTO);
         if(isUpdated) {
             return ResponseEntity
@@ -133,7 +136,7 @@ public class QuizController {
     }
 
     @DeleteMapping("/levels/{levelId}")
-    public ResponseEntity<ResponseDTO> deleteLevel(@PathVariable Long levelId) {
+    public ResponseEntity<ResponseDTO> deleteLevel(@PathVariable("levelId") Long levelId) {
         boolean isDeleted =  levelService.deleteLevel(levelId);
         if(isDeleted) {
             return ResponseEntity
